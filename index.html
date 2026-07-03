@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ねこおき - 猫のロジックパズル</title>
+  <meta name="description" content="すべての行・列・エリアに猫を1匹ずつ。考えれば必ず解ける、猫のロジックパズル。">
+  <meta name="theme-color" content="#faf3e8">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ねこおき">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <button id="btn-home" class="icon-btn hidden" aria-label="ホームへ戻る">⌂</button>
+    <h1 class="app-title"><span class="title-cat" aria-hidden="true"></span>ねこおき</h1>
+    <div class="header-right">
+      <span id="timer" class="timer hidden">0:00</span>
+      <button id="btn-help" class="icon-btn" aria-label="あそびかた">?</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ホーム画面 -->
+    <section id="screen-home" class="screen">
+      <div class="mascot" aria-hidden="true">
+        <svg viewBox="0 0 120 90" class="mascot-svg">
+          <g class="mascot-cat">
+            <path d="M25 38 L32 16 L46 32 Z" fill="#e8a87c"/>
+            <path d="M95 38 L88 16 L74 32 Z" fill="#e8a87c"/>
+            <path d="M29 34 L33 23 L41 32 Z" fill="#f7cfa8"/>
+            <path d="M91 34 L87 23 L79 32 Z" fill="#f7cfa8"/>
+            <ellipse cx="60" cy="55" rx="38" ry="32" fill="#e8a87c"/>
+            <path d="M44 52 q5 -6 10 0" stroke="#4a3728" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M66 52 q5 -6 10 0" stroke="#4a3728" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M56 63 q4 4 8 0" stroke="#4a3728" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="60" cy="60" rx="3.5" ry="2.5" fill="#c96f4a"/>
+            <g stroke="#b98a68" stroke-width="2" stroke-linecap="round">
+              <path d="M30 58 L14 54"/><path d="M30 64 L15 66"/>
+              <path d="M90 58 L106 54"/><path d="M90 64 L105 66"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <p class="tagline">すべての猫に、ねどこを。</p>
+      <div id="size-list" class="size-list"></div>
+      <div id="home-stats" class="home-stats"></div>
+    </section>
+
+    <!-- ゲーム画面 -->
+    <section id="screen-game" class="screen hidden">
+      <div class="board-wrap">
+        <div id="board" class="board" role="grid"></div>
+      </div>
+      <div class="controls">
+        <button id="btn-undo" class="ctrl-btn" aria-label="もどす">
+          <span class="ctrl-icon">↩</span><span class="ctrl-label">もどす</span>
+        </button>
+        <button id="btn-clear" class="ctrl-btn" aria-label="全部消す">
+          <span class="ctrl-icon">✕</span><span class="ctrl-label">クリア</span>
+        </button>
+        <button id="btn-new" class="ctrl-btn" aria-label="新しいパズル">
+          <span class="ctrl-icon">↻</span><span class="ctrl-label">別の問題</span>
+        </button>
+        <button id="btn-automark" class="ctrl-btn" aria-label="自動マーク切り替え" aria-pressed="false">
+          <span class="ctrl-icon">🐾</span><span class="ctrl-label">自動マーク</span>
+        </button>
+      </div>
+      <p class="game-hint">タップ: 空マス → <span class="dot-sample">×</span> → 猫</p>
+    </section>
+  </main>
+
+  <!-- あそびかたモーダル -->
+  <div id="modal-rules" class="modal hidden" role="dialog" aria-modal="true" aria-label="あそびかた">
+    <div class="modal-card">
+      <h2>あそびかた</h2>
+      <ul class="rules-list">
+        <li><span class="rule-icon">😺</span>すべての <b>行</b>・<b>列</b>・<b>同じ色のエリア</b> に猫を <b>1匹ずつ</b> 置きます。</li>
+        <li><span class="rule-icon">🙅</span>猫どうしは <b>ななめもふくめて</b> となり合ってはいけません。</li>
+        <li><span class="rule-icon">👆</span>マスをタップすると 空マス → <b>×印</b> → <b>猫</b> の順に切り替わります。×印は「ここには置けない」のメモです。</li>
+        <li><span class="rule-icon">💡</span>運は不要。かならず論理だけで解けます。</li>
+      </ul>
+      <button id="btn-rules-close" class="primary-btn">とじる</button>
+    </div>
+  </div>
+
+  <!-- クリアモーダル -->
+  <div id="modal-win" class="modal hidden" role="dialog" aria-modal="true" aria-label="クリア">
+    <div class="modal-card win-card">
+      <div class="win-cats" aria-hidden="true">😴💤</div>
+      <h2>みんな ねむれました!</h2>
+      <p id="win-info" class="win-info"></p>
+      <p id="win-unlock" class="win-unlock hidden"></p>
+      <div class="win-btns">
+        <button id="btn-next" class="primary-btn">つぎのパズル</button>
+        <button id="btn-win-home" class="ghost-btn">サイズをえらぶ</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>

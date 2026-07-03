@@ -1,0 +1,30 @@
+{
+  "name": "ねこおき - 猫のロジックパズル",
+  "short_name": "ねこおき",
+  "description": "すべての行・列・エリアに猫を1匹ずつ。考えれば必ず解ける、猫のロジックパズル。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf3e8",
+  "theme_color": "#faf3e8",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
