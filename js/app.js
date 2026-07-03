@@ -13,10 +13,14 @@
   ];
   const UNLOCK_NEED = 2; // 前のサイズを何問クリアで次を解放するか
 
-  const REGION_COLORS = [
-    "#f9c8c8", "#f9e2ae", "#c8e6c9", "#bbdefb", "#e1bee7",
-    "#ffe0b2", "#b2ebf2", "#f8bbd0", "#dcedc8", "#d7ccc8",
-  ];
+  // エリアの数(=盤面サイズ)ぶんの色相を均等割りし、さらに偶奇でリッチ度(彩度・明度)を
+  // 変えることで、隣接エリアが似た色相同士になっても見分けやすくする。
+  function regionColor(id, total) {
+    const hue = Math.round((id * 360) / total + 8) % 360;
+    const light = id % 2 === 0 ? 80 : 68;
+    const sat = id % 2 === 0 ? 58 : 66;
+    return `hsl(${hue}, ${sat}%, ${light}%)`;
+  }
 
   const STORE_KEY = "nekooki.v1";
 
@@ -220,13 +224,14 @@
   function renderBoard() {
     const n = game.n;
     boardEl.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    boardEl.style.gridTemplateRows = `repeat(${n}, 1fr)`;
     boardEl.innerHTML = "";
     cellEls = [];
     for (let i = 0; i < n * n; i++) {
       const r = Math.floor(i / n), c = i % n;
       const el = document.createElement("div");
       el.className = "cell";
-      el.style.background = REGION_COLORS[game.region[i] % REGION_COLORS.length];
+      el.style.background = regionColor(game.region[i], n);
       if (r > 0 && game.region[i] !== game.region[i - n]) el.classList.add("bt");
       else if (r > 0) el.classList.add("thin-t");
       if (c > 0 && game.region[i] !== game.region[i - 1]) el.classList.add("bl");
